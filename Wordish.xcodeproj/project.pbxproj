@@ -6,17 +6,26 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A08C54172EC5A5B600EFA3AC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A08C54162EC5A5B600EFA3AC /* ContentView.swift */; };
+		A08C54252EC5A63300EFA3AC /* GameModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A08C54242EC5A63300EFA3AC /* GameModels.swift */; };
+		A08C54272EC5A64D00EFA3AC /* WordServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = A08C54262EC5A64D00EFA3AC /* WordServices.swift */; };
+		A08C54292EC5A67D00EFA3AC /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A08C54282EC5A67D00EFA3AC /* GameViewModel.swift */; };
+		A08C542B2EC5A6B200EFA3AC /* KeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A08C542A2EC5A6B200EFA3AC /* KeyboardView.swift */; };
+		A08C542F2EC5A87100EFA3AC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A08C542C2EC5A87100EFA3AC /* Assets.xcassets */; };
+		A08C54302EC5A87100EFA3AC /* WordishApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A08C542D2EC5A87100EFA3AC /* WordishApp.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		A08C54112EC5A5B600EFA3AC /* Wordish.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wordish.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A08C54162EC5A5B600EFA3AC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A08C54242EC5A63300EFA3AC /* GameModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModels.swift; sourceTree = "<group>"; };
+		A08C54262EC5A64D00EFA3AC /* WordServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordServices.swift; sourceTree = "<group>"; };
+		A08C54282EC5A67D00EFA3AC /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
+		A08C542A2EC5A6B200EFA3AC /* KeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardView.swift; sourceTree = "<group>"; };
+		A08C542C2EC5A87100EFA3AC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A08C542D2EC5A87100EFA3AC /* WordishApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordishApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		A08C54132EC5A5B600EFA3AC /* Wordish */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Wordish;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		A08C540E2EC5A5B600EFA3AC /* Frameworks */ = {
@@ -32,8 +41,12 @@
 		A08C54082EC5A5B600EFA3AC = {
 			isa = PBXGroup;
 			children = (
-				A08C54132EC5A5B600EFA3AC /* Wordish */,
+				A08C54232EC5A60700EFA3AC /* Services */,
+				A08C54222EC5A60200EFA3AC /* Views */,
+				A08C54212EC5A5FA00EFA3AC /* ViewModels */,
+				A08C54202EC5A5F500EFA3AC /* Models */,
 				A08C54122EC5A5B600EFA3AC /* Products */,
+				A08C542E2EC5A87100EFA3AC /* Wordish */,
 			);
 			sourceTree = "<group>";
 		};
@@ -43,6 +56,48 @@
 				A08C54112EC5A5B600EFA3AC /* Wordish.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A08C54202EC5A5F500EFA3AC /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A08C54242EC5A63300EFA3AC /* GameModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A08C54212EC5A5FA00EFA3AC /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A08C54282EC5A67D00EFA3AC /* GameViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A08C54222EC5A60200EFA3AC /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A08C54162EC5A5B600EFA3AC /* ContentView.swift */,
+				A08C542A2EC5A6B200EFA3AC /* KeyboardView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A08C54232EC5A60700EFA3AC /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A08C54262EC5A64D00EFA3AC /* WordServices.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A08C542E2EC5A87100EFA3AC /* Wordish */ = {
+			isa = PBXGroup;
+			children = (
+				A08C542C2EC5A87100EFA3AC /* Assets.xcassets */,
+				A08C542D2EC5A87100EFA3AC /* WordishApp.swift */,
+			);
+			path = Wordish;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -59,9 +114,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				A08C54132EC5A5B600EFA3AC /* Wordish */,
 			);
 			name = Wordish;
 			packageProductDependencies = (
@@ -109,6 +161,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A08C542F2EC5A87100EFA3AC /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +172,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A08C54302EC5A87100EFA3AC /* WordishApp.swift in Sources */,
+				A08C54172EC5A5B600EFA3AC /* ContentView.swift in Sources */,
+				A08C54272EC5A64D00EFA3AC /* WordServices.swift in Sources */,
+				A08C54252EC5A63300EFA3AC /* GameModels.swift in Sources */,
+				A08C542B2EC5A6B200EFA3AC /* KeyboardView.swift in Sources */,
+				A08C54292EC5A67D00EFA3AC /* GameViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -2,7 +2,7 @@
 //  WordishApp.swift
 //  Wordish
 //
-//  Created by Lucas Lopez on 11/13/25.
+//  Created by Lucas Lopez.
 //
 
 import SwiftUI
