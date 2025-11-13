@@ -42,7 +42,7 @@
   <img src="https://img.shields.io/badge/Architecture-MVVM-blueviolet?style=for-the-badge" />
 
   <!-- Concurrency -->
-  <img src="https://img.shields.io/badge/Concurrency-async%2Fawait-yellow?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Swift_Concurrency-async%2Fawait-yellow?style=for-the-badge" />
 
   <!-- Networking -->
   <img src="https://img.shields.io/badge/Networking-URLSession-orange?style=for-the-badge" />
