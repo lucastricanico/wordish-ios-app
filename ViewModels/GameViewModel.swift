@@ -8,58 +8,91 @@
 import SwiftUI
 import Combine
 
-@MainActor // class runs on main thread = UI thread
+/// The main state manager for the Wordish game.
+///
+/// `GameViewModel` owns all gameplay state:
+/// - the tile grid (rows/columns)
+/// - current cursor position
+/// - keyboard letter coloring
+/// - game status (playing / won / lost)
+/// - async loading of new secret words
+///
+/// This object is observable by SwiftUI, so all UI updates occur automatically
+/// when published properties change.
+@MainActor
 final class GameViewModel: ObservableObject { // final to avoid subclasses = clearer
 
-    // all rows in the game
+    // MARK: - Published Game State
+    
+    /// The 6 rows shown on screen. Each row contains 5 tiles.
     @Published var rows: [Row] = []
 
-    // which row we are currently typing into, set to 0
+    /// The index of the row the user is currently typing into.
     @Published var currentRow: Int = 0
 
-    // which column we are currently typing into within row, set to 0
+    /// The column position (0–4) inside the current row.
     @Published var currentCol: Int = 0
 
-    // game status set to enum GameStatus = .playing
+    /// Whether the game is active, won, or lost.
     @Published var status: GameStatus = .playing
     
-    // secret word to be guessed
+    /// The secret 5-letter word the user needs to guess
     @Published var secret: String = "APPLE"
     
-    // dictionary
+    /// Tracks the best-known state for each keyboard letter.
+    /// Used to color keys as `.correct`, `.present`, or `.absent`.
     @Published var keyStates: [Character: LetterState] = [:]
     
-    // tells View if game is currently fetching a word or not, starts as false
+    /// Whether the app is currently fetching a word from the API.
     @Published var isLoading = false
 
-    init() { // initialized when game runs, calls resetGrid()
+    // MARK: - Initialization
+    
+    /// Sets up the game by creating an empty grid and fetching a new secret word.
+    init() {
         resetGrid()
     }
-
-    // Reset the grid to 6 empty rows, empty columns, and status set initialized to .playing
+    
+    // MARK: - Game Setup
+    
+    /// Resets all gameplay state and asynchronously fetches a new secret word.
+    ///
+    /// This method:
+    /// - clears the grid
+    /// - resets cursor position
+    /// - resets key states
+    /// - sets game status back to `.playing`
+    /// - shows a loading overlay
+    /// - fetches a fresh word using `WordService`
+    ///
+    /// Uses Swift Concurrency (`async/await`) ensuring the UI remains responsive
+    /// while the network request is in progress.
+    
     func resetGrid() {
         rows = (0..<6).map { _ in Row() }
         currentRow = 0
         currentCol = 0
         status = .playing
-        keyStates.removeAll() // resets all keyStates (colors)
+        keyStates.removeAll()
         
-        isLoading = true // update isLoading to true
+        isLoading = true
         
-        // secret word from API
         Task {
                 let service = WordService()
                 do {
-                    let newWord = try await service.fetchRandomWord() // calls async function // try = might throw if network fails
-                    await MainActor.run { // await = suspends task until network finishes // ensures self.secret is updated back on main UI
+                    // Suspends until the network request completes.
+                    let newWord = try await service.fetchRandomWord()
+                    await MainActor.run {
                         self.secret = newWord
-                        self.isLoading = false // hide the overlay
+                        self.isLoading = false
                         print("New secret word:", newWord)
                     }
                 } catch {
-                    await MainActor.run { // fall back to APPLE if there is an error with netwoek or API
+                    await MainActor.run {
+                        // Fallback word used only in failure cases.
                         self.secret = "APPLE"
-                        self.isLoading = false // hide overlay
+                        //  Hide loading overlay once finished.
+                        self.isLoading = false
                         print("Failed to fetch word, defaulting to APPLE:", error)
                     }
                 }
@@ -67,116 +100,125 @@ final class GameViewModel: ObservableObject { // final to avoid subclasses = cle
         
     }
 
-    func type(_ ch: Character) { // function that takes a single parameter = character typed
-        // Don’t type if the game is over
-        guard status == .playing else { return } // unless status is playing, we stop the typing
+    // MARK: - Input Handling
 
-        // Make sure we have space in the current row
-        guard currentRow < rows.count, // unless currentRow < total rows, we stop the typing
-              currentCol < 5 else { return } // unless currentColumn < 5, we stop the typing
+    /// Inserts a typed character into the current tile and advances the cursor.
+    ///
+    /// Ignores input if:
+    /// - the game is already finished
+    /// - the row is full
+    func type(_ ch: Character) {
+        guard status == .playing else { return }
+        guard currentRow < rows.count,
+              currentCol < 5 else { return }
 
-        // Write the letter into the Tile
-        rows[currentRow].tiles[currentCol].char = ch //write character in current tile
-
-        // Move to next column
+        rows[currentRow].tiles[currentCol].char = ch
         currentCol += 1
     }
     
-    func backspace() { // function for backspace
+    /// Deletes the character at the current cursor position.
+    ///
+    /// Behaves like a backspace:
+    /// - moves cursor left
+    /// - clears the tile
+    func backspace() {
           
-            guard status == .playing else { return } // unless status is playing, stop backspaces
+            guard status == .playing else { return }
+            guard currentRow < rows.count else { return }
+            guard currentCol > 0 else { return }
 
-            // Make sure we are within row bounds
-            guard currentRow < rows.count else { return } // unless within row bounds, stop backspaces
-
-            guard currentCol > 0 else { return } // unless there is at least 1 char typed, stop backspaces
-
-            // move cursor left
             currentCol -= 1
-
-            // clear that tile
             rows[currentRow].tiles[currentCol].char = nil
         }
     
-    func submit() { // function for submitting word
-        // only if game is still playing
-        guard status == .playing else { return } // unless status is playing, stop submission
+    // MARK: - Submission
 
-        // must be exactly 5 letters to submit
-        guard currentCol == 5 else { return } // unless in column 5, stop submission
+    /// Validates and submits the current 5-letter guess.
+    ///
+    /// This method:
+    /// - builds the guess string
+    /// - evaluates tile states (green/yellow/gray)
+    /// - updates keyboard letter states
+    /// - determines win/loss conditions
+    func submit() {
+        guard status == .playing else { return }
+        guard currentCol == 5 else { return }
         
-        // guess string
-        let guess = rows[currentRow].tiles // get 5 tile objects in current row
-            .compactMap { $0.char } // pull out each character ignoring nils
-            .map { String($0) } // turn each character into a string
-            .joined() // join all string into one
+        let guess = rows[currentRow].tiles
+            .compactMap { $0.char }
+            .map { String($0) }
+            .joined()
 
-            // evaluate guess
             evaluate(guess: guess)
         
-        // guess condition
-        if guess == secret { // if our guess = secret
-            status = .won // change status of status to .won
+        if guess == secret {
+            status = .won
             return
         }
 
-        // if we've submitted the last row, game is over
-        if currentRow == rows.count - 1 { // if in last row and we submitted, game is over = lost
+        if currentRow == rows.count - 1 {
             status = .lost
             return
         }
 
-        // otherwise (have not lost), we move to next row
         currentRow += 1
         currentCol = 0
     }
     
-    // evaluates the win
+    // MARK: - Evaluation
+
+    /// Evaluates a submitted guess and updates tile + keyboard coloring.
+    ///
+    /// Uses a two-pass algorithm:
+    /// 1. First marks correct letters (green)
+    /// 2. Then marks present letters (yellow) based on remaining unmatched counts
+    ///
+    /// This prevents incorrectly over-highlighting duplicate letters.
     private func evaluate(guess: String) {
-        let secretArray = Array(secret) // convert to array to index
-        let guessArray = Array(guess) // conver to array to index
+        let secretArray = Array(secret)
+        let guessArray = Array(guess)
         
-        var states = Array(repeating: LetterState.absent, count: 5) // assume all tiles are gray
+        var states = Array(repeating: LetterState.absent, count: 5)
         
-        var remainingCounts: [Character: Int] = [:] //count how many copies of X letter are unclaimed
+        // Count remaining unmatched charcaters in the secret word
+        var remainingCounts: [Character: Int] = [:]
         for ch in secretArray {
-            remainingCounts[ch, default: 0] += 1 // counts how many unclaimed
+            remainingCounts[ch, default: 0] += 1
         }
         
-        // first loop that evaluates if letter in same position -> green
+        // Pass 1 — mark greens
         for i in 0..<5 {
-            if guessArray[i] == secretArray[i] { // if letter guesed in same position as array
-                states[i] = .correct // set state to correct -> green
-                remainingCounts[guessArray[i], default: 0] -= 1 // decrement count for that letter
+            if guessArray[i] == secretArray[i] {
+                states[i] = .correct
+                remainingCounts[guessArray[i], default: 0] -= 1
             }
-            
         }
         
-        // second loop that skips indices that are already green and considers for yellow now
+        // Pass 2 — mark yellows
         for i in 0..<5 {
-                guard states[i] != .correct else { continue } // if green we ignore, else continue
+                guard states[i] != .correct else { continue }
                 let ch = guessArray[i]
-                if let remaining = remainingCounts[ch], remaining > 0 { // if letter has remaining count
-                    states[i] = .present // set state to present -> yellow
-                    remainingCounts[ch] = remaining - 1 // decrement count for that letter
+                if let remaining = remainingCounts[ch], remaining > 0 {
+                    states[i] = .present
+                    remainingCounts[ch] = remaining - 1
                 } else {
-                    states[i] = .absent // else (not present), we set state to absent -> grey
+                    states[i] = .absent
                 }
             }
         
-        // third loop that applies results of states to all tiles
+        // Apply tile states
         for i in 0..<5 {
             rows[currentRow].tiles[i].state = states[i]
         }
         
-        // fourth loop that updates the state of each letter
+        // Update keyboard states using best-known information
         for i in 0..<5 {
-            let ch = guessArray[i] // ch = letters of guess
-            let newState = states[i] // newState = state of guessed letters
+            let ch = guessArray[i]
+            let newState = states[i]
 
-            // pick the better state if we already had one
             if let existing = keyStates[ch] {
-                // hierarchy: correct > present > absent > unknown
+                // Correct overrides everything
+                // Present overrides absent
                 if newState == .correct || (newState == .present && existing == .absent) {
                     keyStates[ch] = newState
                 }

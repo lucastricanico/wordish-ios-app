@@ -5,33 +5,64 @@
 //  Created by Lucas Lopez.
 //
 
-import Foundation // Basic Swift Types
+import Foundation
 import SwiftUI
 
-// LetterState Represents the classification of a letter
+// MARK: - Letter Classification
+
+/// Represents the evaluation state of a latter in a guess
+///
+/// State is used to color the tiles in a guess according to the secret word:
+/// - `.unknown`: Letter has not been evaluated yet = dark gray
+/// - `.correct`: Letter is in the correct position = green
+/// - `.present`: Letter exists in the word but in a different position = yellow
+/// - `.absent`: Letter is not in the word at all = gray
 enum LetterState: Equatable {
-    case unknown // not evaluated yet
-    case correct // right letter + right position = green
-    case present // right word + wrong position = yellow
-    case absent // wrong word + wrong position = grey
+    case unknown
+    case correct
+    case present
+    case absent
 }
 
-// A single tile in the grid (one character + its status)
-struct Tile: Identifiable { // identifiable to assign id to each object
-    let id = UUID()   // unique ID for each object
-    var char: Character? = nil   // letter typed by the player, can be optional (?) and is set to nil
-    var state: LetterState = .unknown // state set to unknown from enum LetterState
-}
+// MARK: - Tile Model
 
-// A row of 5 tiles (one full guess)
-struct Row: Identifiable {
+/// A single tile in the grid.
+///
+/// Each tile represents one character the user typed and the tile’s current
+/// evaluation state. Conforms to `Identifiable` so SwiftUI can track it in lists.
+struct Tile: Identifiable {
+    
+    ///  Unique identifier so SwiftUI can diff & animate tiles.
     let id = UUID()
+    
+    /// The character typed by the user (optional because the tile starts empty).
+    var char: Character? = nil
+    
+    /// The tile's evaluation state, defaults to `.unknown` before guessing.
+    var state: LetterState = .unknown
+}
+
+// MARK: - Row Model
+
+/// Represents a row in the grid (a single 5-letter guess).
+///
+/// A row contains exactly 5 `Tile` objects.
+struct Row: Identifiable {
+    
+    /// Unique row identifier.
+    let id = UUID()
+    
+    /// Array of 5 tiles initialized to empty.
     var tiles: [Tile] = (0..<5).map { _ in Tile() }
 }
 
-// GamesStatus represents the status of the game
+// MARK: - Game Status
+
+/// Represents the current status of the game.
+///
+/// Used by the UI to show overlays like “Game Over” or “You Win”.
 enum GameStatus {
-    case playing // still guessing in game
-    case won // won game
-    case lost // lost game
+    case playing /// Actively guessing
+    case won /// Correct word guessed
+    case lost /// Ran out of attempts
 }
