@@ -37,7 +37,7 @@ final class GameViewModel: ObservableObject { // final to avoid subclasses = cle
     @Published var status: GameStatus = .playing
     
     /// The secret 5-letter word the user needs to guess
-    @Published var secret: String = "APPLE"
+    @Published var secret: String = GameConstants.fallbackWord
     
     /// Tracks the best-known state for each keyboard letter.
     /// Used to color keys as `.correct`, `.present`, or `.absent`.
@@ -90,10 +90,10 @@ final class GameViewModel: ObservableObject { // final to avoid subclasses = cle
                 } catch {
                     await MainActor.run {
                         // Fallback word used only in failure cases.
-                        self.secret = "APPLE"
+                        self.secret = GameConstants.fallbackWord
                         //  Hide loading overlay once finished.
                         self.isLoading = false
-                        print("Failed to fetch word, defaulting to APPLE:", error)
+                        print("Failed to fetch word, defaulting to \(GameConstants.fallbackWord):", error)
                     }
                 }
             }

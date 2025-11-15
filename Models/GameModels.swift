@@ -8,6 +8,12 @@
 import Foundation
 import SwiftUI
 
+/// Shared constants used throughout the Wordish game.
+nonisolated enum GameConstants {
+    /// Fallback secret word used when the API fails.
+    static let fallbackWord = "APPLE"
+}
+
 // MARK: - Letter Classification
 
 /// Represents the evaluation state of a latter in a guess

@@ -58,6 +58,6 @@ actor WordService {
         let words = try JSONDecoder().decode([String].self, from: data)
 
         // 4. Return first word uppercased, with safe fallback
-        return words.first?.uppercased() ?? "APPLE"
+        return words.first?.uppercased() ?? GameConstants.fallbackWord
     }
 }
