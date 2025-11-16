@@ -7,9 +7,11 @@
 
   <img src="https://img.shields.io/badge/iOS-17+-lightgrey?style=for-the-badge" />
   <img src="https://img.shields.io/badge/SwiftUI-Ready-blue?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/API-RandomWord-success?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Architecture-MVVM-informational?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Swift_Concurrency-async%2Fawait-yellow?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Architecture-MVVM_+_Observable-informational?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Unit_Tests-Included-brightgreen?style=for-the-badge" />
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" />
+
 
 </p>
 
@@ -24,7 +26,13 @@
 ---
 
 ## Overview  
-**Wordish** is an iOS word-guessing game inspired by *Wordle*, recreated entirely in **SwiftUI** with clean architecture, smooth animations, and real-time API-driven word generation.
+**Wordish** is a Wordle-style word-guessing game redesigned from the ground up using modern iOS development patterns:
+- SwiftUI first
+- Swift Concurrency (async/await)
+- @Observable + @MainActor ViewModel
+- Actor-isolated networking
+- Fully custom keyboard UI
+- Unit tests for the core evaluation algorithm
 
 ---
 
@@ -32,26 +40,13 @@
 
 <p align="left">
 
-  <!-- Language -->
   <img src="https://img.shields.io/badge/Swift-FA7343?logo=swift&logoColor=white&style=for-the-badge" />
-
-  <!-- Framework -->
   <img src="https://img.shields.io/badge/SwiftUI-0A84FF?logo=swift&logoColor=white&style=for-the-badge" />
-
-  <!-- Architecture -->
-  <img src="https://img.shields.io/badge/Architecture-MVVM-blueviolet?style=for-the-badge" />
-
-  <!-- Concurrency -->
-  <img src="https://img.shields.io/badge/Swift_Concurrency-async%2Fawait-yellow?style=for-the-badge" />
-
-  <!-- Networking -->
+  <img src="https://img.shields.io/badge/@Observable-New_Observation_Framework-pink?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Concurrency-Actors_%7C_MainActor-yellow?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Networking-URLSession-orange?style=for-the-badge" />
-
-  <!-- API -->
+  <img src="https://img.shields.io/badge/Tests-Unit_Tests-blue?style=for-the-badge" />
   <img src="https://img.shields.io/badge/API-Random_Word_API-success?style=for-the-badge" />
-
-  <!-- iOS Version -->
-  <img src="https://img.shields.io/badge/iOS-17+-lightgrey?style=for-the-badge" />
 
 </p>
 
@@ -62,6 +57,7 @@
 ### Core Gameplay
 - Guess the 5-letter word in 6 attempts  
 - Tile color feedback (🟩 correct, 🟨 present, ⬜️ absent)  
+- Duplicate letter-safe evaluation algorithm
 - Dynamic on-screen keyboard with matching colors  
 - Delete + Enter functionality  
 - Win/Loss screen with solution reveal  
@@ -76,7 +72,7 @@
 ### API Integration
 - Fetches random 5-letter words using:  
   `https://random-word-api.vercel.app/api?words=1&length=5`  
-- Async/await word fetch with automatic fallback  
+- Safe async/await word fetch with automatic fallback  
 
 ---
 
@@ -95,41 +91,137 @@
 
 ## Architecture
 
-### MVVM Breakdown
-| Layer | Role |
-|-------|------|
-| **Model** | Represents tiles, rows, and letter states |
-| **ViewModel** | Game logic, evaluation, keyboard coloring, API calls |
-| **Views** | Grid, keyboard, overlays, intro screen |
-
-### Networking  
-- `WordService` implemented as an **actor** for concurrency safety  
-- Uses `URLSession` + `async/await`  
-- Decodes the API’s JSON response (array) and extracts a single uppercase secret word
-
-### Custom Views
-- `ContentView`
-  - Main game screen containing the grid, keyboard, overlays, and app title
-  - Hosts the GameViewModel via @StateObject
-  - Manages intro screen visibility, loading overlay, and win/lose UI
-- `KeyboardView`
-  - Fully custom on-screen keyboard
-  - Arranged in three dynamic rows (QWERTY layout)
-  - Each key updates its color based on guess history (absent/present/correct)
-  - Calls back into the ViewModel for input, delete, and submit actions
-- `Tile Rendering (inside ContentView)`
-  - Each tile displays a letter or empty state
-  - Background color reflects evaluation state (unknown, correct, present, absent)
-  - Built using RoundedRectangle + overlayed text
-- `Loading Overlay`
-  - Uses SwiftUI’s ProgressView
-  - Dimmed background to block interaction during API fetch
-- `Intro Screen`
-  - Custom splash/start screen
-  - Animated fade-out transition using .easeInOut
-  - Prevents game UI from showing underneath
+Wordish follows a modern **MVVM architecture** tailored for SwiftUI and Swift Concurrency.  
+The goal is to keep views simple, centralize logic in the ViewModel, and ensure all state updates are safe, predictable, and testable.
 
 ---
+
+### MVVM Overview
+
+| Layer | Responsibility |
+|-------|---------------|
+| **Model** | Defines basic game structures (tiles, rows, states, constants) with no logic. |
+| **ViewModel (`GameViewModel`)** | Contains all game logic, guess evaluation, async word loading, and screen-state transitions. |
+| **Views** | SwiftUI layouts (grid, keyboard, overlays) that react automatically to ViewModel changes. |
+
+---
+
+### 1. Models
+
+The model layer defines only data, not behavior:
+
+- `Tile` — letter + evaluation state  
+- `Row` — a single 5-letter guess  
+- `LetterState` — correct / present / absent / unknown  
+- `GameStatus` & `GameResult` — playing / won / lost  
+- `GameScreenState` — start / loading / playing / finished  
+- `GameConstants` — shared layout + game rule values  
+
+All logic lives in the ViewModel, not in these models.
+
+---
+
+### 2. ViewModel (`GameViewModel`)
+
+The ViewModel is annotated with:
+
+- `@Observable` for SwiftUI-native reactivity  
+- `@MainActor` to ensure UI-safe state updates  
+
+Its responsibilities include:
+
+#### **Game Logic**
+- Managing the 6×5 grid  
+- Typing, deleting, and submitting guesses  
+- Two-pass evaluation algorithm (duplicate-letter safe)  
+- Updating keyboard colors based on best-known info  
+
+#### **App State**
+Uses **`GameScreenState`** to control UI flow:
+- `.start`  
+- `.loading`  
+- `.playing`  
+- `.finished(GameResult)`  
+
+This design guarantees the UI is always in exactly one valid state.
+
+#### **Networking**
+- Fetches random words using `WordService`  
+- Runs asynchronously using async/await  
+- Provides a fallback word on failure  
+- Switches UI state from `.loading` → `.playing`  
+
+#### **Testability**
+The evaluation method is directly testable and covered by a full test suite.
+
+---
+
+### 3. Views
+
+SwiftUI views remain intentionally “dumb”:
+
+#### **ContentView**
+- Owns the ViewModel  
+- Displays grid, keyboard, and overlays  
+- Switches layouts based on `screenState`
+
+#### **KeyboardView**
+- Custom Wordle-style keyboard  
+- Keypress animation + color updates  
+- Sends input events back to the ViewModel
+
+#### **Tile Rendering**
+- RoundedRectangle tiles sized by `GameConstants`  
+- Colors driven entirely by `LetterState`
+
+#### **Overlays**
+- Start screen (animated fade-out)  
+- Loading screen  
+- Game end screen (won/lost + answer)
+
+---
+
+### 4. Networking (`WordService`)
+
+Implemented as an `actor` for thread-safe concurrency:
+
+- Uses `URLSession` + async/await  
+- Decodes API response (`[String]`)  
+- Returns a single uppercase word  
+- Guarantees safe access even under parallel calls
+
+---
+
+### 5. Unit Testing
+
+Evaluation logic is fully unit-tested, covering:
+
+- Perfect match  
+- All wrong  
+- Present letters  
+- Duplicate letter edge cases  
+
+---
+
+## Unit Testing
+A dedicated **EvaluationTests.swift** suite validates correctness of guess evaluation logic.
+
+### Covered Cases:
+- Perfect match
+- All letters wrong
+- Letters present in wrong positions
+- Duplicate letters
+
+### Example Test
+
+```bash
+func testDuplicateLetters() {
+    let states = evaluate("COCOA", secret: "CARGO")
+    let expected: [LetterState] = [.correct, .absent, .absent, .present, .absent]
+    XCTAssertEqual(states, expected)
+}
+```
+--- 
 
 ## Installation
 
@@ -165,6 +257,9 @@ Wordish/
 ├── Views/
 │   ├── ContentView.swift
 │   └── KeyboardView.swift
+│
+├── Tests/
+│   └── EvaluationTests.swift
 │
 ├── Screenshots/
 │   ├── demo.gif
