@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import Observation
 
 /// A fully custom on-screen keyboard.
 ///
@@ -23,7 +23,7 @@ import SwiftUI
 ///
 struct KeyboardView: View {
     /// Shared game state (letters typed, key colors, submission, etc.)
-    @ObservedObject var vm: GameViewModel
+    @Bindable var vm: GameViewModel
     
     /// Tracks which key is currently being tapped, purely for animation.
     @State private var pressedKey: String? = nil

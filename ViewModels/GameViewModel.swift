@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import Combine
+import Observation
 
 /// The main state manager for the Wordish game.
 ///
@@ -20,31 +20,32 @@ import Combine
 /// This object is observable by SwiftUI, so all UI updates occur automatically
 /// when published properties change.
 @MainActor
-final class GameViewModel: ObservableObject { // final to avoid subclasses = clearer
+@Observable
+final class GameViewModel { // final to avoid subclasses = clearer
 
     // MARK: - Published Game State
     
     /// The 6 rows shown on screen. Each row contains 5 tiles.
-    @Published var rows: [Row] = []
+    var rows: [Row] = []
 
     /// The index of the row the user is currently typing into.
-    @Published var currentRow: Int = 0
+    var currentRow: Int = 0
 
     /// The column position (0–4) inside the current row.
-    @Published var currentCol: Int = 0
+    var currentCol: Int = 0
 
     /// Whether the game is active, won, or lost.
-    @Published var status: GameStatus = .playing
+    var status: GameStatus = .playing
     
     /// The secret 5-letter word the user needs to guess
-    @Published var secret: String = GameConstants.fallbackWord
+    var secret: String = GameConstants.fallbackWord
     
     /// Tracks the best-known state for each keyboard letter.
     /// Used to color keys as `.correct`, `.present`, or `.absent`.
-    @Published var keyStates: [Character: LetterState] = [:]
+    var keyStates: [Character: LetterState] = [:]
     
     /// Whether the app is currently fetching a word from the API.
-    @Published var isLoading = false
+    var isLoading = false
 
     // MARK: - Initialization
     

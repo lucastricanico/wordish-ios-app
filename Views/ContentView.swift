@@ -20,7 +20,7 @@ struct ContentView: View {
     
     /// The game’s primary state container.
     /// `@StateObject` ensures the ViewModel lives as long as the view.
-    @StateObject private var vm = GameViewModel()
+    @State private var vm = GameViewModel()
     
     var body: some View { // standard SwiftUI view model
         ZStack {
