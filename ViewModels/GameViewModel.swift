@@ -22,18 +22,18 @@ import Observation
 @MainActor
 @Observable
 final class GameViewModel { // final to avoid subclasses = clearer
-
+    
     // MARK: - Published Game State
     
     /// The 6 rows shown on screen. Each row contains 5 tiles.
     var rows: [Row] = []
-
+    
     /// The index of the row the user is currently typing into.
     var currentRow: Int = 0
-
+    
     /// The column position (0–4) inside the current row.
     var currentCol: Int = 0
-
+    
     /// Whether the game is active, won, or lost.
     var status: GameStatus = .playing
     
@@ -46,7 +46,7 @@ final class GameViewModel { // final to avoid subclasses = clearer
     
     /// Whether the app is currently fetching a word from the API.
     var isLoading = false
-
+    
     // MARK: - Initialization
     
     /// Sets up the game by creating an empty grid and fetching a new secret word.
@@ -79,30 +79,27 @@ final class GameViewModel { // final to avoid subclasses = clearer
         isLoading = true
         
         Task {
-                let service = WordService()
-                do {
-                    // Suspends until the network request completes.
-                    let newWord = try await service.fetchRandomWord()
-                    await MainActor.run {
-                        self.secret = newWord
-                        self.isLoading = false
-                        print("New secret word:", newWord)
-                    }
-                } catch {
-                    await MainActor.run {
-                        // Fallback word used only in failure cases.
-                        self.secret = GameConstants.fallbackWord
-                        //  Hide loading overlay once finished.
-                        self.isLoading = false
-                        print("Failed to fetch word, defaulting to \(GameConstants.fallbackWord):", error)
-                    }
-                }
+            let service = WordService()
+            let newWord: String
+            do {
+                // Suspends until the network request completes.
+                newWord = try await service.fetchRandomWord()
             }
+            catch {
+                newWord = GameConstants.fallbackWord
+                print("Failed to fetch word, defaulting to \(GameConstants.fallbackWord):", error)
+            }
+            await MainActor.run {
+                self.secret = newWord
+                self.isLoading = false
+                
+            }
+        }
         
     }
-
+    
     // MARK: - Input Handling
-
+    
     /// Inserts a typed character into the current tile and advances the cursor.
     ///
     /// Ignores input if:
@@ -112,7 +109,7 @@ final class GameViewModel { // final to avoid subclasses = clearer
         guard status == .playing else { return }
         guard currentRow < rows.count,
               currentCol < GameConstants.wordLength else { return }
-
+        
         rows[currentRow].tiles[currentCol].char = ch
         currentCol += 1
     }
@@ -123,17 +120,17 @@ final class GameViewModel { // final to avoid subclasses = clearer
     /// - moves cursor left
     /// - clears the tile
     func backspace() {
-          
-            guard status == .playing else { return }
-            guard currentRow < rows.count else { return }
-            guard currentCol > 0 else { return }
-
-            currentCol -= 1
-            rows[currentRow].tiles[currentCol].char = nil
-        }
+        
+        guard status == .playing else { return }
+        guard currentRow < rows.count else { return }
+        guard currentCol > 0 else { return }
+        
+        currentCol -= 1
+        rows[currentRow].tiles[currentCol].char = nil
+    }
     
     // MARK: - Submission
-
+    
     /// Validates and submits the current 5-letter guess.
     ///
     /// This method:
@@ -149,25 +146,25 @@ final class GameViewModel { // final to avoid subclasses = clearer
             .compactMap { $0.char }
             .map { String($0) }
             .joined()
-
-            evaluate(guess: guess)
+        
+        evaluate(guess: guess)
         
         if guess == secret {
             status = .finished(result: .won)
             return
         }
-
+        
         if currentRow == rows.count - 1 {
             status = .finished(result: .lost)
             return
         }
-
+        
         currentRow += 1
         currentCol = 0
     }
     
     // MARK: - Evaluation
-
+    
     /// Evaluates a submitted guess and updates tile + keyboard coloring.
     ///
     /// Uses a two-pass algorithm:
@@ -197,15 +194,15 @@ final class GameViewModel { // final to avoid subclasses = clearer
         
         // Pass 2 — mark yellows
         for i in 0..<GameConstants.wordLength {
-                guard states[i] != .correct else { continue }
-                let ch = guessArray[i]
-                if let remaining = remainingCounts[ch], remaining > 0 {
-                    states[i] = .present
-                    remainingCounts[ch] = remaining - 1
-                } else {
-                    states[i] = .absent
-                }
+            guard states[i] != .correct else { continue }
+            let ch = guessArray[i]
+            if let remaining = remainingCounts[ch], remaining > 0 {
+                states[i] = .present
+                remainingCounts[ch] = remaining - 1
+            } else {
+                states[i] = .absent
             }
+        }
         
         // Apply tile states
         for i in 0..<GameConstants.wordLength {
@@ -216,7 +213,7 @@ final class GameViewModel { // final to avoid subclasses = clearer
         for i in 0..<GameConstants.wordLength {
             let ch = guessArray[i]
             let newState = states[i]
-
+            
             if let existing = keyStates[ch] {
                 // Correct overrides everything
                 // Present overrides absent
