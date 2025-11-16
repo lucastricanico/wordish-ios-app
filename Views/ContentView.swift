@@ -132,16 +132,16 @@ struct ContentView: View {
     @ViewBuilder // lets function return multiple child views
     private func tileView(_ tile: Tile) -> some View { // helper that takes Tile and returns View
         ZStack { // layers views on top of each other
-            RoundedRectangle(cornerRadius: 6) // draws second rectangle that is the background fill
+            RoundedRectangle(cornerRadius: GameConstants.tileCornerRadius) // draws second rectangle that is the background fill
                 .fill(color(for: tile.state)) // set background fill to the state of the tile
-            RoundedRectangle(cornerRadius: 6) // draws rectangle
+            RoundedRectangle(cornerRadius: GameConstants.tileCornerRadius) // draws rectangle
                 .stroke(Color.gray, lineWidth: 1)
             
             Text(tile.char.map { String($0) } ?? "") // character if present or empty if not
                 .font(.title2)
                 .bold()
         }
-        .frame(width: 44, height: 44) // controls square size
+        .frame(width: GameConstants.tileSize, height: GameConstants.tileSize) // controls square size
     }
     
     /// Returns the background color for a tile based on its evaluation state.

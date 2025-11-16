@@ -76,8 +76,8 @@ struct KeyboardView: View {
     /// Larger width for Enter and Backspace for usability.
     private func keyWidth(for key: String) -> CGFloat {
         switch key {
-        case "Enter", "⌫": return 70
-        default: return 35
+        case "Enter", "⌫": return GameConstants.keyboardEnterWidth
+        default: return GameConstants.keyboardKeyWidth
         }
     }
     

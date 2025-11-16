@@ -70,7 +70,7 @@ final class GameViewModel { // final to avoid subclasses = clearer
     /// while the network request is in progress.
     
     func resetGrid() {
-        rows = (0..<6).map { _ in Row() }
+        rows = (0..<GameConstants.maxRows).map { _ in Row() }
         currentRow = 0
         currentCol = 0
         status = .playing
@@ -111,7 +111,7 @@ final class GameViewModel { // final to avoid subclasses = clearer
     func type(_ ch: Character) {
         guard status == .playing else { return }
         guard currentRow < rows.count,
-              currentCol < 5 else { return }
+              currentCol < GameConstants.wordLength else { return }
 
         rows[currentRow].tiles[currentCol].char = ch
         currentCol += 1
@@ -143,7 +143,7 @@ final class GameViewModel { // final to avoid subclasses = clearer
     /// - determines win/loss conditions
     func submit() {
         guard status == .playing else { return }
-        guard currentCol == 5 else { return }
+        guard currentCol == GameConstants.wordLength else { return }
         
         let guess = rows[currentRow].tiles
             .compactMap { $0.char }
@@ -188,7 +188,7 @@ final class GameViewModel { // final to avoid subclasses = clearer
         }
         
         // Pass 1 — mark greens
-        for i in 0..<5 {
+        for i in 0..<GameConstants.wordLength {
             if guessArray[i] == secretArray[i] {
                 states[i] = .correct
                 remainingCounts[guessArray[i], default: 0] -= 1
@@ -196,7 +196,7 @@ final class GameViewModel { // final to avoid subclasses = clearer
         }
         
         // Pass 2 — mark yellows
-        for i in 0..<5 {
+        for i in 0..<GameConstants.wordLength {
                 guard states[i] != .correct else { continue }
                 let ch = guessArray[i]
                 if let remaining = remainingCounts[ch], remaining > 0 {
@@ -208,12 +208,12 @@ final class GameViewModel { // final to avoid subclasses = clearer
             }
         
         // Apply tile states
-        for i in 0..<5 {
+        for i in 0..<GameConstants.wordLength {
             rows[currentRow].tiles[i].state = states[i]
         }
         
         // Update keyboard states using best-known information
-        for i in 0..<5 {
+        for i in 0..<GameConstants.wordLength {
             let ch = guessArray[i]
             let newState = states[i]
 

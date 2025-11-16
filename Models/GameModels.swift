@@ -10,8 +10,20 @@ import SwiftUI
 
 /// Shared constants used throughout the Wordish game.
 nonisolated enum GameConstants {
+    
+    // MARK: - Game Rules
+    static let wordLength = 5
+    static let maxRows = 6
+    
+    // MARK: - Fallback Word
     /// Fallback secret word used when the API fails.
     static let fallbackWord = "APPLE"
+    
+    // MARK: - UI Layout
+    static let tileSize: CGFloat = 44
+    static let tileCornerRadius: CGFloat = 6
+    static let keyboardEnterWidth: CGFloat = 70
+    static let keyboardKeyWidth: CGFloat = 35
 }
 
 // MARK: - Games Result
@@ -67,7 +79,7 @@ struct Row: Identifiable {
     let id = UUID()
     
     /// Array of 5 tiles initialized to empty.
-    var tiles: [Tile] = (0..<5).map { _ in Tile() }
+    var tiles: [Tile] = (0..<GameConstants.wordLength).map { _ in Tile() }
 }
 
 // MARK: - Games Status
