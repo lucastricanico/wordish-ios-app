@@ -94,7 +94,7 @@ enum GameStatus: Equatable {
 
 /// Represents the current UI screen the user should see.
 /// Ensures the UI can only ever be in ONE valid state at a time.
-enum GameScreenState {
+enum GameScreenState: Equatable {
     case start
     case loading
     case playing

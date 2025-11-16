@@ -16,7 +16,18 @@
 		A08C54302EC5A87100EFA3AC /* WordishApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A08C542D2EC5A87100EFA3AC /* WordishApp.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		A068B49A2ECA6AE20036F9E6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A08C54092EC5A5B600EFA3AC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A08C54102EC5A5B600EFA3AC;
+			remoteInfo = Wordish;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		A068B4962ECA6AE10036F9E6 /* WordishTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordishTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A08C54112EC5A5B600EFA3AC /* Wordish.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wordish.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A08C54162EC5A5B600EFA3AC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A08C54242EC5A63300EFA3AC /* GameModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModels.swift; sourceTree = "<group>"; };
@@ -27,7 +38,22 @@
 		A08C542D2EC5A87100EFA3AC /* WordishApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordishApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		A068B4972ECA6AE10036F9E6 /* WordishTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = WordishTests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
+		A068B4932ECA6AE10036F9E6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A08C540E2EC5A5B600EFA3AC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -45,6 +71,7 @@
 				A08C54222EC5A60200EFA3AC /* Views */,
 				A08C54212EC5A5FA00EFA3AC /* ViewModels */,
 				A08C54202EC5A5F500EFA3AC /* Models */,
+				A068B4972ECA6AE10036F9E6 /* WordishTests */,
 				A08C54122EC5A5B600EFA3AC /* Products */,
 				A08C542E2EC5A87100EFA3AC /* Wordish */,
 			);
@@ -54,6 +81,7 @@
 			isa = PBXGroup;
 			children = (
 				A08C54112EC5A5B600EFA3AC /* Wordish.app */,
+				A068B4962ECA6AE10036F9E6 /* WordishTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -103,6 +131,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		A068B4952ECA6AE10036F9E6 /* WordishTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A068B49E2ECA6AE20036F9E6 /* Build configuration list for PBXNativeTarget "WordishTests" */;
+			buildPhases = (
+				A068B4922ECA6AE10036F9E6 /* Sources */,
+				A068B4932ECA6AE10036F9E6 /* Frameworks */,
+				A068B4942ECA6AE10036F9E6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A068B49B2ECA6AE20036F9E6 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A068B4972ECA6AE10036F9E6 /* WordishTests */,
+			);
+			name = WordishTests;
+			packageProductDependencies = (
+			);
+			productName = WordishTests;
+			productReference = A068B4962ECA6AE10036F9E6 /* WordishTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		A08C54102EC5A5B600EFA3AC /* Wordish */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A08C541C2EC5A5B800EFA3AC /* Build configuration list for PBXNativeTarget "Wordish" */;
@@ -132,6 +183,10 @@
 				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
+					A068B4952ECA6AE10036F9E6 = {
+						CreatedOnToolsVersion = 26.0.1;
+						TestTargetID = A08C54102EC5A5B600EFA3AC;
+					};
 					A08C54102EC5A5B600EFA3AC = {
 						CreatedOnToolsVersion = 26.0.1;
 					};
@@ -152,11 +207,19 @@
 			projectRoot = "";
 			targets = (
 				A08C54102EC5A5B600EFA3AC /* Wordish */,
+				A068B4952ECA6AE10036F9E6 /* WordishTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		A068B4942ECA6AE10036F9E6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A08C540F2EC5A5B600EFA3AC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -168,6 +231,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		A068B4922ECA6AE10036F9E6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A08C540D2EC5A5B600EFA3AC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -183,7 +253,57 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		A068B49B2ECA6AE20036F9E6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A08C54102EC5A5B600EFA3AC /* Wordish */;
+			targetProxy = A068B49A2ECA6AE20036F9E6 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		A068B49C2ECA6AE20036F9E6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = K5HZ8B5AMP;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Lucas.WordishTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Wordish.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Wordish";
+			};
+			name = Debug;
+		};
+		A068B49D2ECA6AE20036F9E6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = K5HZ8B5AMP;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Lucas.WordishTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Wordish.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Wordish";
+			};
+			name = Release;
+		};
 		A08C541A2EC5A5B800EFA3AC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -372,6 +492,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		A068B49E2ECA6AE20036F9E6 /* Build configuration list for PBXNativeTarget "WordishTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A068B49C2ECA6AE20036F9E6 /* Debug */,
+				A068B49D2ECA6AE20036F9E6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		A08C540C2EC5A5B600EFA3AC /* Build configuration list for PBXProject "Wordish" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

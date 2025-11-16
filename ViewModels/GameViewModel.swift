@@ -176,7 +176,7 @@ final class GameViewModel { // final to avoid subclasses = clearer
     /// 2. Then marks present letters (yellow) based on remaining unmatched counts
     ///
     /// This prevents incorrectly over-highlighting duplicate letters.
-    private func evaluate(guess: String) {
+    func evaluate(guess: String) {
         let secretArray = Array(secret)
         let guessArray = Array(guess)
         
