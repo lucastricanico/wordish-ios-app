@@ -44,14 +44,14 @@ final class GameViewModel { // final to avoid subclasses = clearer
     /// Used to color keys as `.correct`, `.present`, or `.absent`.
     var keyStates: [Character: LetterState] = [:]
     
-    /// Whether the app is currently fetching a word from the API.
-    var isLoading = false
+    /// High-level UI screen state (start, loading, playing, finished).
+    var screenState: GameScreenState = .start
     
     // MARK: - Initialization
     
     /// Sets up the game by creating an empty grid and fetching a new secret word.
     init() {
-        resetGrid()
+        rows = (0..<GameConstants.maxRows).map { _ in Row() }
     }
     
     // MARK: - Game Setup
@@ -76,7 +76,7 @@ final class GameViewModel { // final to avoid subclasses = clearer
         status = .playing
         keyStates.removeAll()
         
-        isLoading = true
+        screenState = .loading
         
         Task {
             let service = WordService()
@@ -91,7 +91,7 @@ final class GameViewModel { // final to avoid subclasses = clearer
             }
             await MainActor.run {
                 self.secret = newWord
-                self.isLoading = false
+                self.screenState = .playing
                 
             }
         }
@@ -150,12 +150,16 @@ final class GameViewModel { // final to avoid subclasses = clearer
         evaluate(guess: guess)
         
         if guess == secret {
-            status = .finished(result: .won)
+            let result: GameResult = .won
+            status = .finished(result: result)
+            screenState = .finished(result)
             return
         }
         
         if currentRow == rows.count - 1 {
-            status = .finished(result: .lost)
+            let result: GameResult = .lost
+            status = .finished(result: result)
+            screenState = .finished(result)
             return
         }
         

@@ -89,3 +89,14 @@ enum GameStatus: Equatable {
     case playing
     case finished(result: GameResult)
 }
+
+// MARK: - Unified UI Screen State
+
+/// Represents the current UI screen the user should see.
+/// Ensures the UI can only ever be in ONE valid state at a time.
+enum GameScreenState {
+    case start
+    case loading
+    case playing
+    case finished(GameResult)
+}

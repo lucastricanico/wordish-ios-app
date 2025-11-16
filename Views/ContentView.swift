@@ -15,9 +15,6 @@ import SwiftUI
 /// This view owns the `GameViewModel` and reacts to its published state.
 struct ContentView: View {
     
-    /// Controls visibility of the initial splash/start screen.
-    @State private var showStartScreen = true
-    
     /// The game’s primary state container.
     /// `@StateObject` ensures the ViewModel lives as long as the view.
     @State private var vm = GameViewModel()
@@ -37,8 +34,39 @@ struct ContentView: View {
             }
             .padding() //adds default padding around VStack
             
-            // MARK: - Loading Overlay
-            if vm.isLoading {
+            // MARK: - Screen-State Driven Overlays
+            switch vm.screenState {
+            case .start:
+                // Start screen overlay
+                Color.white.ignoresSafeArea()
+                
+                VStack(spacing: 20) {
+                    Text("WORDISH")
+                        .font(.system(size: 48, weight: .bold))
+                        .foregroundColor(.black)
+                    
+                    Text("by Lucas Lopez")
+                        .font(.title3)
+                        .foregroundColor(.black.opacity(0.8))
+                    
+                    Button(action: {
+                        withAnimation(.easeInOut(duration: 0.4)) {
+                            vm.resetGrid()   // kicks off loading -> playing
+                        }
+                    }) {
+                        Text("Start Game")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .frame(width: 200, height: 50)
+                            .background(Color.blue)
+                            .cornerRadius(12)
+                            .shadow(radius: 5)
+                    }
+                    .padding(.top, 20)
+                }
+                
+            case .loading:
+                // Loading overlay while we fetch the secret word
                 Color.black.opacity(0.4)
                     .ignoresSafeArea()
                 
@@ -48,10 +76,13 @@ struct ContentView: View {
                     .foregroundColor(.white)
                     .background(.ultraThinMaterial)
                     .cornerRadius(10)
-            }
-            
-            // MARK: - Win/Loss Overlay
-            if case .finished(let result) = vm.status {
+                
+            case .playing:
+                // No extra overlay — just the main game UI.
+                EmptyView()
+                
+            case .finished(let result):
+                // Win / Loss overlay
                 Color.black.opacity(0.4)
                     .ignoresSafeArea()
                 
@@ -62,7 +93,6 @@ struct ContentView: View {
                             .font(.largeTitle)
                             .bold()
                             .foregroundColor(.white)
-                    
                     case .lost:
                         Text("Game Over!")
                             .font(.largeTitle)
@@ -80,36 +110,6 @@ struct ContentView: View {
                 .padding()
                 .background(.ultraThinMaterial)
                 .cornerRadius(12)
-            }
-            
-            // MARK: - Start Screen Overlay
-            if showStartScreen {
-                Color.white.ignoresSafeArea()
-                
-                VStack(spacing: 20) {
-                    Text("WORDISH")
-                        .font(.system(size: 48, weight: .bold))
-                        .foregroundColor(.black)
-                    
-                    Text("by Lucas Lopez")
-                        .font(.title3)
-                        .foregroundColor(.black.opacity(0.8))
-                    
-                    Button(action: {
-                        withAnimation(.easeInOut(duration: 0.4)) {
-                            showStartScreen = false
-                        }
-                    }) {
-                        Text("Start Game")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .frame(width: 200, height: 50)
-                            .background(Color.blue)
-                            .cornerRadius(12)
-                            .shadow(radius: 5)
-                    }
-                    .padding(.top, 20)
-                }
             }
         }
     }
