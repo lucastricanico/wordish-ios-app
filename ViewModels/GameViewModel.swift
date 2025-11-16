@@ -152,12 +152,12 @@ final class GameViewModel: ObservableObject { // final to avoid subclasses = cle
             evaluate(guess: guess)
         
         if guess == secret {
-            status = .won
+            status = .finished(result: .won)
             return
         }
 
         if currentRow == rows.count - 1 {
-            status = .lost
+            status = .finished(result: .lost)
             return
         }
 
@@ -180,7 +180,7 @@ final class GameViewModel: ObservableObject { // final to avoid subclasses = cle
         
         var states = Array(repeating: LetterState.absent, count: 5)
         
-        // Count remaining unmatched charcaters in the secret word
+        // Count remaining unmatched characters in the secret word
         var remainingCounts: [Character: Int] = [:]
         for ch in secretArray {
             remainingCounts[ch, default: 0] += 1

@@ -14,6 +14,14 @@ nonisolated enum GameConstants {
     static let fallbackWord = "APPLE"
 }
 
+// MARK: - Games Result
+
+/// Represents the final outcome of a finished game
+enum GameResult: Equatable {
+    case won
+    case lost
+}
+
 // MARK: - Letter Classification
 
 /// Represents the evaluation state of a latter in a guess
@@ -62,13 +70,10 @@ struct Row: Identifiable {
     var tiles: [Tile] = (0..<5).map { _ in Tile() }
 }
 
-// MARK: - Game Status
+// MARK: - Games Status
 
-/// Represents the current status of the game.
-///
-/// Used by the UI to show overlays like “Game Over” or “You Win”.
-enum GameStatus {
-    case playing /// Actively guessing
-    case won /// Correct word guessed
-    case lost /// Ran out of attempts
+/// Represents whether the game is ongoing or finished (with associated result).
+enum GameStatus: Equatable {
+    case playing
+    case finished(result: GameResult)
 }

@@ -51,17 +51,19 @@ struct ContentView: View {
             }
             
             // MARK: - Win/Loss Overlay
-            if vm.status != .playing {
+            if case .finished(let result) = vm.status {
                 Color.black.opacity(0.4)
                     .ignoresSafeArea()
                 
                 VStack(spacing: 8) {
-                    if vm.status == .won {
+                    switch result {
+                    case .won:
                         Text("You Win!")
                             .font(.largeTitle)
                             .bold()
                             .foregroundColor(.white)
-                    } else if vm.status == .lost {
+                    
+                    case .lost:
                         Text("Game Over!")
                             .font(.largeTitle)
                             .bold()
