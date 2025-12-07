@@ -8,11 +8,11 @@
 import SwiftUI
 import Observation
 
-/// A fully custom on-screen keyboard.
+/// Fully custom on-screen keyboard.
 ///
-/// ### Why did I use a custom keyboard?
+/// ### Why did I use this instead of default TextField?
 /// While SwiftUI’s default `TextField` automatically shows the system keyboard,
-/// my game's keyboard only allows **A–Z letters, Enter, and Delete**.
+/// my game's keyboard only allows **A–Z letters, Enter, and Delete ** (just like Wordle).
 ///
 /// I also wanted the format to be different than the default keyboard.
 ///

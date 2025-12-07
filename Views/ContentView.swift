@@ -9,17 +9,17 @@ import SwiftUI
 
 
 
-/// The main game screen for Wordish.
+/// Main game screen.
 /// Displays the title, tile grid, custom keyboard, loading overlay,
 /// game-end overlay, and an animated start screen.
 /// This view owns the `GameViewModel` and reacts to its published state.
 struct ContentView: View {
     
-    /// The game’s primary state container.
+    /// Game’s primary state container.
     /// `@StateObject` ensures the ViewModel lives as long as the view.
     @State private var vm = GameViewModel()
     
-    var body: some View { // standard SwiftUI view model
+    var body: some View {
         ZStack {
             
             // MARK: - Main Game UI (Grid + Keyboard)
@@ -78,7 +78,7 @@ struct ContentView: View {
                     .cornerRadius(10)
                 
             case .playing:
-                // No extra overlay — just the main game UI.
+                // No extra overlay, just main game UI.
                 EmptyView()
                 
             case .finished(let result):

@@ -8,7 +8,7 @@
 import SwiftUI
 import Observation
 
-/// The main state manager for the Wordish game.
+/// The main state manager for game.
 ///
 /// `GameViewModel` owns all gameplay state:
 /// - the tile grid (rows/columns)
@@ -25,7 +25,7 @@ final class GameViewModel { // final to avoid subclasses = clearer
     
     // MARK: - Published Game State
     
-    /// The 6 rows shown on screen. Each row contains 5 tiles.
+    /// The 6 rows shown on screen, each w/ 5 tiles.
     var rows: [Row] = []
     
     /// The index of the row the user is currently typing into.
@@ -116,7 +116,7 @@ final class GameViewModel { // final to avoid subclasses = clearer
     
     /// Deletes the character at the current cursor position.
     ///
-    /// Behaves like a backspace:
+    /// Behaves like  backspace:
     /// - moves cursor left
     /// - clears the tile
     func backspace() {
@@ -172,8 +172,8 @@ final class GameViewModel { // final to avoid subclasses = clearer
     /// Evaluates a submitted guess and updates tile + keyboard coloring.
     ///
     /// Uses a two-pass algorithm:
-    /// 1. First marks correct letters (green)
-    /// 2. Then marks present letters (yellow) based on remaining unmatched counts
+    /// - First marks correct letters (green)
+    /// - Then marks present letters (yellow) based on remaining unmatched counts
     ///
     /// This prevents incorrectly over-highlighting duplicate letters.
     func evaluate(guess: String) {

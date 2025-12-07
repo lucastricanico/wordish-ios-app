@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-/// Shared constants used throughout the Wordish game.
+/// Shared constants used throughout the game.
 nonisolated enum GameConstants {
     
     // MARK: - Game Rules

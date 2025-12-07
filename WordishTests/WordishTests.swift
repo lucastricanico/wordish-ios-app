@@ -14,8 +14,7 @@ import Testing
 @testable import Wordish
 @MainActor
 
-/// Small sanity tests for the app.
-/// (Full evaluation logic tests in `EvaluationTests.swift`.)
+/// Small tests for the app.
 struct WordishTests {
 
     @Test
